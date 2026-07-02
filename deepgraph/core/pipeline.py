@@ -5,10 +5,10 @@ from pathlib import Path
 from deepgraph.core.types import ExtractionResult, AnalysisResult
 from deepgraph.core.graph import TypedMultiGraph
 from deepgraph.extract import registry
-from deepgraph.analyze import analyze as analyze_graph
+from deepgraph.analyze import analyze as analyze_graph_fn
 
 
-def analyze(root: Path) -> tuple[TypedMultiGraph, ExtractionResult, AnalysisResult]:
+def analyze(root: Path, *, run_analysis: bool = True) -> tuple[TypedMultiGraph, ExtractionResult, AnalysisResult]:
     """Run the full analysis pipeline on a directory."""
     files = registry.detect_files(root)
     if not files:
@@ -24,12 +24,10 @@ def analyze(root: Path) -> tuple[TypedMultiGraph, ExtractionResult, AnalysisResu
     graph.build(extraction)
     print(f"Graph: {graph.node_count()} nodes, {graph.edge_count()} edges")
 
-    analysis = analyze_graph(graph)
-    if analysis.communities:
-        print(f"Communities: {len(analysis.communities)}")
-    if analysis.god_nodes:
-        print(f"God nodes: {len(analysis.god_nodes)}")
-    if analysis.surprises:
-        print(f"Surprises: {len(analysis.surprises)}")
+    if not run_analysis:
+        return graph, extraction, AnalysisResult()
+
+    analysis = analyze_graph_fn(graph)
+    print(f"Communities: {len(analysis.communities)} | God nodes: {len(analysis.god_nodes)} | Surprises: {len(analysis.surprises)}")
 
     return graph, extraction, analysis

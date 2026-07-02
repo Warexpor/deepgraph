@@ -46,15 +46,7 @@ def analyze(path: str, output: str | None, pretty: bool, obsidian: str | None, h
     """Analyze a codebase and build a typed knowledge graph."""
     _register_all()
 
-    graph, extraction, analysis = pipeline.analyze(Path(path))
-
-    if not json_only and analysis:
-        if analysis.god_nodes:
-            click.echo(f"God nodes: {len(analysis.god_nodes)}")
-        if analysis.surprises:
-            click.echo(f"Surprises: {len(analysis.surprises)}")
-        if analysis.communities:
-            click.echo(f"Communities: {len(analysis.communities)}")
+    graph, extraction, analysis = pipeline.analyze(Path(path), run_analysis=not json_only)
 
     data = graph.to_json_dict()
     if output:
