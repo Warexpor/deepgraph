@@ -1,4 +1,4 @@
-# deepgraph
+# DeepGraph
 
 **Multi-language typed knowledge graph builder.**  
 Parse source code into a directed graph of typed nodes and edges, then visualize it as an interactive force-directed graph or an Obsidian vault with wiki-links.
